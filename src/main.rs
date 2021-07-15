@@ -2,8 +2,7 @@ use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
 use std::env;
 
-
-fn env_get(x: String) -> String{
+fn env_get(x: String) -> String {
     for (key, value) in env::vars() {
         if key == x {
             return value;
@@ -11,7 +10,6 @@ fn env_get(x: String) -> String{
     }
     return "".to_owned();
 }
-
 
 #[get("/")]
 async fn hello() -> impl Responder {
