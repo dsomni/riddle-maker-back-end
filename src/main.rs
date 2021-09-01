@@ -2,6 +2,8 @@ use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
 use std::env;
 
+mod get_game_cards;
+
 fn env_get(x: String) -> String {
     for (key, value) in env::vars() {
         if key == x {
@@ -11,19 +13,6 @@ fn env_get(x: String) -> String {
     return "".to_owned();
 }
 
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
-
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
-}
-
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
-}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -33,9 +22,7 @@ async fn main() -> std::io::Result<()> {
     address.push_str(&port);
     HttpServer::new(|| {
         App::new()
-            .service(hello)
-            .service(echo)
-            .route("/hey", web::get().to(manual_hello))
+            .route("/api/get_game_cards", web::get().to(get_game_cards::get_cards))
     })
     .bind(address)?
     .run()
