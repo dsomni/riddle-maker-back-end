@@ -1,4 +1,5 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, post, web, http, App, HttpResponse, HttpServer, Responder};
+use actix_cors::Cors;
 use dotenv::dotenv;
 use std::env;
 
@@ -22,7 +23,11 @@ async fn main() -> std::io::Result<()> {
     address.push_str(&port);
     HttpServer::new(|| {
         App::new()
-            .route("/api/get_game_cards", web::get().to(get_game_cards::get_cards))
+        .wrap(Cors::new()
+        .allowed_origin("http://localhost:3000")
+        .finish()
+    )
+        .route("/api/get_game_cards", web::get().to(get_game_cards::get_cards))
     })
     .bind(address)?
     .run()
