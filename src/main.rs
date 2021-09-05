@@ -1,25 +1,16 @@
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use dotenv::dotenv;
-use std::env;
 
 mod db_queries;
 mod get_game_cards;
-
-fn env_get(x: String) -> String {
-    for (key, value) in env::vars() {
-        if key == x {
-            return value;
-        }
-    }
-    return "".to_owned();
-}
+mod utils;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
     let mut address: String = "127.0.0.1:".to_owned();
-    let port: String = env_get("PORT".to_owned());
+    let port: String = utils::env_get("PORT".to_owned());
     address.push_str(&port);
     HttpServer::new(|| {
         App::new()
