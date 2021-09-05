@@ -11,7 +11,10 @@ pub struct GameCard {
 }
 
 pub fn connect_to_db() -> Client {
-  let client = Client::connect("host=localhost user=postgres password=1786", NoTls); // connect
+  let client = Client::connect(
+    "host=localhost port=6432 user=riddlemaker password=1974",
+    NoTls,
+  ); // connect
 
   // Error checking
   match client {
