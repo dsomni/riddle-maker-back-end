@@ -1,14 +1,6 @@
 use postgres::{Client, NoTls};
-use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-pub struct GameCard {
-  pub game_id: i32,
-  pub title: String,
-  pub info: String,
-  pub img_url: String,
-  pub page_url: String,
-}
+use crate::structs::GameCard;
 
 pub fn connect_to_db() -> Client {
   let client = Client::connect(
@@ -28,7 +20,20 @@ pub fn get_games_vec(client: &mut Client) -> Vec<GameCard> {
     Ok(games) => games,
     Err(e) => panic!("Error on query: \n{}", e),
   };
+  form_games_vec(&rows)
+}
 
+// TODO: generic for value type
+pub fn get_games_by_key(client: &mut Client, db: String, key: String, value: String) -> Vec<GameCard> {
+  let query = format!("SELECT * FROM {} WHERE {} = {}", db, key, value);
+  let rows = match client.query(query.as_str(), &[]) {
+    Ok(games) => games,
+    Err(e) => panic!("Error on query by key: \n{}", e),
+  };
+  form_games_vec(&rows)
+}
+
+fn form_games_vec(rows: &Vec<postgres::Row>) -> Vec<GameCard> {
   // Forming games array
   let mut games = Vec::<GameCard>::new();
   for row in rows {
