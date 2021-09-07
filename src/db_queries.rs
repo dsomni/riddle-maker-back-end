@@ -4,7 +4,7 @@ use crate::structs::GameCard;
 
 pub fn connect_to_db() -> Client {
   let client = Client::connect(
-    "host=localhost port=6432 user=riddlemaker password=1974",
+    "host=localhost port=5432 user=riddlemaker password=1974",
     NoTls,
   ); // connect
 
@@ -24,7 +24,7 @@ pub fn get_games_vec(client: &mut Client) -> Vec<GameCard> {
 }
 
 // TODO: generic for value type
-pub fn get_games_by_key(client: &mut Client, db: String, key: String, value: String) -> Vec<GameCard> {
+pub fn get_games_by_key(client: &mut Client, db: &str, key: &str, value: &str) -> Vec<GameCard> {
   let query = format!("SELECT * FROM {} WHERE {} = {}", db, key, value);
   let rows = match client.query(query.as_str(), &[]) {
     Ok(games) => games,
@@ -38,7 +38,7 @@ fn form_games_vec(rows: &Vec<postgres::Row>) -> Vec<GameCard> {
   let mut games = Vec::<GameCard>::new();
   for row in rows {
     games.push(GameCard {
-      game_id: row.get::<_, i32>(0),
+      game_id: row.get::<_, i32>("gameid"),
       title: row.get::<_, String>(1),
       info: row.get::<_, String>(2),
       img_url: row.get::<_, String>(3),
